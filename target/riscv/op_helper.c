@@ -819,3 +819,26 @@ void helper_sort(CPURISCVState *env, target_ulong src, target_ulong size, target
         }
     }
 }
+
+void helper_crush(CPURISCVState *env, target_ulong src, target_ulong size, target_ulong dest){
+    for(uint32_t i=0; i<size/2; i++){
+        target_ulong src0_addr = src + 2*i;
+        target_ulong src1_addr = src + 2*i + 1;
+        target_ulong dst_addr = dest + i;
+        uint8_t src0 = cpu_ldub_data_ra(env, src0_addr, GETPC());
+        uint8_t src1 = cpu_ldub_data_ra(env, src1_addr, GETPC());
+        uint8_t dst_low4 = src0 & 0xf;
+        uint8_t dst_high4 = src1 & 0xf;
+        uint8_t dst = dst_high4 << 4 | dst_low4;
+        cpu_stb_data_ra(env, dst_addr, dst, GETPC());
+    }
+
+    if(size % 2 != 0){
+        target_ulong src_addr = src + size-1;
+        target_ulong dst_addr = size / 2;
+        uint8_t src_val = cpu_ldub_data_ra(env, src_addr, GETPC());
+        uint8_t dst_val = src_val & 0xf;
+        cpu_stb_data_ra(env, dst_addr, dst_val, GETPC());
+    }
+
+}
