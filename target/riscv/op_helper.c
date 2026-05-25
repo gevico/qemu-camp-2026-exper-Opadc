@@ -781,3 +781,22 @@ done:
 }
 
 #endif /* !CONFIG_USER_ONLY */
+
+void helper_dma(CPURISCVState *env, target_ulong src, target_ulong type, target_ulong dest){
+    target_ulong n = 0;
+    if(type == 0){
+        n = 8;
+    }else if(type == 1){
+        n = 16;
+    }else{
+        n = 32;
+    }
+    for(uint32_t i=0; i<n; i++){
+        for(uint32_t j=0; j<n; j++){
+            uint32_t src_addr = src + (i*n+j)*4;
+            uint32_t dest_addr = dest + (j*n+i)*4;
+            uint32_t data = cpu_ldl_data_ra(env, src_addr, GETPC());
+            cpu_stl_data_ra(env, dest_addr, data, GETPC());
+        }
+    }
+}
