@@ -800,3 +800,22 @@ void helper_dma(CPURISCVState *env, target_ulong src, target_ulong type, target_
         }
     }
 }
+
+void helper_sort(CPURISCVState *env, target_ulong src, target_ulong size, target_ulong nums){
+    if(nums > size){
+        return;
+    }
+    for(uint32_t i=0; i < nums-1; i++){
+        for(uint32_t j=0; j < nums-i-1; j++){
+            uint32_t left_addr = src + j*4;
+            uint32_t right_addr = src + (j+1)*4;
+            uint32_t left = cpu_ldl_data_ra(env, left_addr, GETPC());
+            uint32_t right = cpu_ldl_data_ra(env, right_addr, GETPC());
+            if(left > right){
+                uint32_t tmp = left;
+                cpu_stl_data_ra(env, left_addr, right, GETPC());
+                cpu_stl_data_ra(env, right_addr, tmp, GETPC());
+            }
+        }
+    }
+}
