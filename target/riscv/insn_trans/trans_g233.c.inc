@@ -26,3 +26,13 @@ static bool trans_crush(DisasContext *ctx, arg_dma *a){
     gen_helper_crush(tcg_env, src, size, dest);
     return true;
 }
+
+
+static bool trans_expand(DisasContext *ctx, arg_dma *a){
+    TCGv src = get_gpr(ctx, a->rs1, EXT_NONE);
+    TCGv size = get_gpr(ctx, a->rs2, EXT_NONE);
+    TCGv dest = get_gpr(ctx, a->rd, EXT_NONE);
+
+    gen_helper_expand(tcg_env, src, size, dest);
+    return true;
+}

@@ -842,3 +842,16 @@ void helper_crush(CPURISCVState *env, target_ulong src, target_ulong size, targe
     }
 
 }
+
+void helper_expand(CPURISCVState *env, target_ulong src, target_ulong size, target_ulong dest){
+    for(uint32_t i=0; i<size; i++){
+        target_ulong dst0_addr = dest + 2*i;
+        target_ulong dst1_addr = dest + 2*i + 1;
+        target_ulong src_addr = src + i;
+        uint8_t src_byte = cpu_ldub_data_ra(env, src_addr, GETPC());
+        uint8_t dst_byte0 = src_byte & 0xf;
+        uint8_t dst_byte1 = (src_byte >> 4) & 0xf;
+        cpu_stb_data_ra(env, dst0_addr, dst_byte0, GETPC());
+        cpu_stb_data_ra(env, dst1_addr, dst_byte1, GETPC());
+    }
+}
