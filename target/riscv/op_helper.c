@@ -855,3 +855,13 @@ void helper_expand(CPURISCVState *env, target_ulong src, target_ulong size, targ
         cpu_stb_data_ra(env, dst1_addr, dst_byte1, GETPC());
     }
 }
+
+void helper_vdot(CPURISCVState *env, target_ulong A, target_ulong B, target_ulong res){
+    int64_t sum = 0;
+    for(int i=0; i<16; i++){
+        int64_t a_elem = cpu_ldl_data_ra(env, A+i*4, GETPC());
+        int64_t b_elem = cpu_ldl_data_ra(env, B+i*4, GETPC());
+        sum += a_elem*b_elem;
+    }
+    env->gpr[res] = sum;
+}
