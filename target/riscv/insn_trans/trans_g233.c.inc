@@ -45,3 +45,12 @@ static bool trans_vdot(DisasContext *ctx, arg_dma *a){
     gen_helper_vdot(tcg_env, A, B, res);
     return true;
 }
+
+static bool trans_vrelu(DisasContext *ctx, arg_dma *a){
+    TCGv src = get_gpr(ctx, a->rs1, EXT_NONE);
+    TCGv size = get_gpr(ctx, a->rs2, EXT_NONE);
+    TCGv dest = get_gpr(ctx, a->rd, EXT_NONE);
+
+    gen_helper_vrelu(tcg_env, src, size, dest);
+    return true;
+}

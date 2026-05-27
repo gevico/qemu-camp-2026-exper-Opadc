@@ -865,3 +865,12 @@ void helper_vdot(CPURISCVState *env, target_ulong A, target_ulong B, target_ulon
     }
     env->gpr[res] = sum;
 }
+
+
+void helper_vrelu(CPURISCVState *env, target_ulong src, target_ulong size, target_ulong dest){
+    for(uint32_t i=0; i<size; i++){
+        int32_t src_int32 = cpu_ldl_data_ra(env, src+i*4, GETPC());
+        int32_t dest_int32 = src_int32 > 0 ? src_int32 : 0;
+        cpu_stl_data_ra(env, dest+i*4, dest_int32, GETPC());
+    }
+}
